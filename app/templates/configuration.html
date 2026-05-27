@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Configuration{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:24px;">
+    <h1 style="font-size:22px; font-weight:600; color:#1a1a2e;">Configuration</h1>
+</div>
+
+<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px;">
+    <div style="background:#fff; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,0.08); padding:24px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+            <span style="font-size:24px; color:#d40000;"><ion-icon name="business-outline"></ion-icon></span>
+            <h2 style="font-size:15px; font-weight:600; color:#1a1a2e;">Return Types</h2>
+        </div>
+        <p style="font-size:13px; color:#888; margin-bottom:12px;">Income Tax, VAT, Withholding, Municipal, etc.</p>
+        <div style="font-size:13px; color:#555;">3 types registered</div>
+    </div>
+
+    <div style="background:#fff; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,0.08); padding:24px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+            <span style="font-size:24px; color:#d40000;"><ion-icon name="construct-outline"></ion-icon></span>
+            <h2 style="font-size:15px; font-weight:600; color:#1a1a2e;">Roles</h2>
+        </div>
+        <p style="font-size:13px; color:#888; margin-bottom:12px;">Administrator, Analyst, Reviewer.</p>
+        <div style="font-size:13px; color:#555;">3 roles registered</div>
+    </div>
+
+    <div style="background:#fff; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,0.08); padding:24px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+            <span style="font-size:24px; color:#d40000;"><ion-icon name="calculator-outline"></ion-icon></span>
+            <h2 style="font-size:15px; font-weight:600; color:#1a1a2e;">Chart of Accounts</h2>
+        </div>
+        <p style="font-size:13px; color:#888; margin-bottom:12px;">Unified accounting plan (PUC).</p>
+        <div style="font-size:13px; color:#555;">142 accounts registered</div>
+    </div>
+
+    <div style="background:#fff; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,0.08); padding:24px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+            <span style="font-size:24px; color:#d40000;"><ion-icon name="calendar-outline"></ion-icon></span>
+            <h2 style="font-size:15px; font-weight:600; color:#1a1a2e;">Fiscal Periods</h2>
+        </div>
+        <p style="font-size:13px; color:#888; margin-bottom:12px;">Enabled fiscal years and periods.</p>
+        <div style="font-size:13px; color:#555;">2 active periods</div>
+    </div>
+</div>
+{% endblock %}

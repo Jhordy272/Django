@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Users{% endblock %}
+
+{% block extra_head %}
+<style>
+    .page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+    .page-header h1 { font-size:22px; font-weight:600; color:#1a1a2e; }
+
+    .btn-primary {
+        background:#d40000; color:#fff; border:none;
+        padding:9px 18px; border-radius:6px; cursor:pointer;
+        font-size:14px; display:flex; align-items:center; gap:6px;
+        transition:background 0.2s;
+    }
+    .btn-primary:hover { background:#b30000; }
+
+    .table-card { background:#fff; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,0.08); overflow:hidden; }
+    .table-card table { width:100%; border-collapse:collapse; font-size:13px; }
+    .table-card thead th {
+        background:#d40000; color:#fff;
+        padding:12px 16px; text-align:left; font-weight:500; white-space:nowrap;
+    }
+    .table-card tbody tr { border-bottom:1px solid #f0f0f0; transition:background 0.15s; }
+    .table-card tbody tr:hover { background:#fff5f5; }
+    .table-card tbody td { padding:11px 16px; color:#333; vertical-align:middle; }
+
+    .badge { display:inline-block; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; }
+    .badge-active   { background:#d1e7dd; color:#0a3622; }
+    .badge-inactive { background:#f8d7da; color:#842029; }
+    .badge-admin    { background:#cfe2ff; color:#084298; }
+    .badge-user     { background:#e2e3e5; color:#41464b; }
+
+    .avatar {
+        width:32px; height:32px; border-radius:50%;
+        background:#d40000; color:#fff;
+        display:inline-flex; align-items:center; justify-content:center;
+        font-size:13px; font-weight:700; margin-right:8px; flex-shrink:0;
+    }
+    .user-cell { display:flex; align-items:center; }
+
+    .actions { display:flex; gap:6px; }
+    .btn-icon {
+        background:none; border:none; cursor:pointer;
+        color:#555; font-size:16px; padding:5px;
+        border-radius:4px; transition:background 0.15s;
+    }
+    .btn-icon:hover       { background:#f0f0f0; color:#d40000; }
+    .btn-icon.danger:hover { background:#fff0f0; color:#c00; }
+
+    .modal-backdrop {
+        display:none; position:fixed; inset:0;
+        background:rgba(0,0,0,0.4); z-index:200;
+        justify-content:center; align-items:center;
+    }
+    .modal-backdrop.open { display:flex; }
+    .modal {
+        background:#fff; border-radius:12px; width:480px; max-width:95%;
+        padding:28px; box-shadow:0 8px 32px rgba(0,0,0,0.2);
+    }
+    .modal h2 { font-size:18px; margin-bottom:20px; color:#1a1a2e; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .form-group { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+    .form-group label { font-size:12px; color:#666; font-weight:500; }
+    .form-group input,
+    .form-group select {
+        border:1px solid #ddd; border-radius:6px;
+        padding:8px 10px; font-size:13px; outline:none;
+    }
+    .form-group input:focus,
+    .form-group select:focus { border-color:#d40000; }
+    .hint { font-size:11px; color:#aaa; margin-top:2px; }
+    .modal-footer { display:flex; justify-content:flex-end; gap:10px; margin-top:8px; }
+    .btn-cancel {
+        background:#f0f0f0; border:none; padding:8px 16px;
+        border-radius:6px; cursor:pointer; font-size:13px;
+    }
+    .btn-cancel:hover { background:#e0e0e0; }
+    .btn-danger {
+        background:#d40000; color:#fff; border:none;
+        padding:8px 16px; border-radius:6px; cursor:pointer; font-size:13px;
+    }
+    .btn-danger:hover { background:#b30000; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Users <span style="font-size:14px; font-weight:400; color:#888;">({{ users.count }} registered)</span></h1>
+</div>
+
+<div class="table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Last Login</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td>
+                    <div class="user-cell">
+                        <span class="avatar">{{ u.username|first|upper }}</span>
+                        <div>
+                            <div style="font-weight:500;">{{ u.username }}</div>
+                            <div style="font-size:11px; color:#888;">{{ u.get_full_name }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ u.email|default:"—" }}</td>
+                <td>
+                    {% if u.is_superuser %}
+                        <span class="badge badge-admin">Superuser</span>
+                    {% elif u.is_staff %}
+                        <span class="badge badge-admin">Staff</span>
+                    {% else %}
+                        <span class="badge badge-user">User</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if u.is_active %}
+                        <span class="badge badge-active">Active</span>
+                    {% else %}
+                        <span class="badge badge-inactive">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>{{ u.last_login|date:"m/d/Y H:i"|default:"Never" }}</td>
+                <td>
+                    <div class="actions">
+                        <button class="btn-icon" title="Edit"
+                                onclick="openEdit({{ u.pk }},'{{ u.username }}','{{ u.first_name }}','{{ u.last_name }}','{{ u.email }}',{{ u.is_active|yesno:'true,false' }},{{ u.is_staff|yesno:'true,false' }})">
+                            <ion-icon name="create-outline"></ion-icon>
+                        </button>
+                        {% if u != request.user %}
+                        <button class="btn-icon danger" title="Delete"
+                                onclick="openDelete({{ u.pk }},'{{ u.username }}')">
+                            <ion-icon name="trash-outline"></ion-icon>
+                        </button>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align:center; padding:32px; color:#999;">No users found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-backdrop" id="modalEdit">
+    <div class="modal">
+        <h2>Edit User</h2>
+        <form method="post" id="formEdit" action="">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="edit-username" disabled style="background:#f5f5f5; color:#888;">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="first_name" id="edit-first_name">
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" name="last_name" id="edit-last_name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" id="edit-email">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="is_active" id="edit-is_active">
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select name="is_staff" id="edit-is_staff">
+                        <option value="0">User</option>
+                        <option value="1">Staff / Admin</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>New Password</label>
+                <input type="password" name="password" placeholder="Leave blank to keep current">
+                <span class="hint">Fill only if you want to change the password.</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel"
+                        onclick="document.getElementById('modalEdit').classList.remove('open')">Cancel</button>
+                <button type="submit" class="btn-primary">
+                    <ion-icon name="save-outline"></ion-icon> Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-backdrop" id="modalDelete">
+    <div class="modal" style="width:380px;">
+        <h2 style="color:#c00;">Delete User</h2>
+        <p style="font-size:14px; color:#555; margin-bottom:20px;">
+            Are you sure you want to delete <strong id="delete-username"></strong>?
+            This action cannot be undone.
+        </p>
+        <form method="post" id="formDelete" action="">
+            {% csrf_token %}
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel"
+                        onclick="document.getElementById('modalDelete').classList.remove('open')">Cancel</button>
+                <button type="submit" class="btn-danger">Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function openEdit(pk, username, firstName, lastName, email, isActive, isStaff) {
+        document.getElementById('formEdit').action        = `/users/${pk}/edit/`;
+        document.getElementById('edit-username').value   = username;
+        document.getElementById('edit-first_name').value = firstName;
+        document.getElementById('edit-last_name').value  = lastName;
+        document.getElementById('edit-email').value      = email;
+        document.getElementById('edit-is_active').value  = isActive ? '1' : '0';
+        document.getElementById('edit-is_staff').value   = isStaff  ? '1' : '0';
+        document.getElementById('modalEdit').classList.add('open');
+    }
+
+    function openDelete(pk, username) {
+        document.getElementById('formDelete').action             = `/users/${pk}/delete/`;
+        document.getElementById('delete-username').textContent   = username;
+        document.getElementById('modalDelete').classList.add('open');
+    }
+
+    ['modalEdit', 'modalDelete'].forEach(id => {
+        document.getElementById(id).addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('open');
+        });
+    });
+</script>
+{% endblock %}

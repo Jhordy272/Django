@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BDO Smart Tax Hub{% endblock %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    {% block extra_head %}{% endblock %}
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { display: flex; font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+
+        nav.sidebar {
+            width: 220px;
+            min-height: 100vh;
+            background: #d40000;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 100;
+        }
+        nav.sidebar ul { list-style: none; width: 100%; }
+        nav.sidebar ul li.logo-container { padding: 16px 20px 20px; }
+        nav.sidebar ul li.logo-container img { width: 110px; }
+        nav.sidebar ul li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        nav.sidebar ul li a:hover  { background: rgba(255,255,255,0.15); }
+        nav.sidebar ul li a.active { background: rgba(255,255,255,0.25); font-weight: 600; }
+        nav.sidebar ul li a .icon  { font-size: 20px; min-width: 22px; }
+        nav.sidebar .logout-item   { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.2); }
+
+        main.content {
+            margin-left: 220px;
+            flex: 1;
+            min-height: 100vh;
+            padding: 28px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <ul>
+            <li class="logo-container">
+                <a href="{% url 'home' %}">
+                    <img src="{% static 'img/BDO_logo_Blanco.png' %}" alt="BDO Logo"
+                         onerror="this.style.display='none'">
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>
+                    <span class="icon"><ion-icon name="grid-outline"></ion-icon></span>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'users' %}" {% if request.resolver_match.url_name == 'users' %}class="active"{% endif %}>
+                    <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+                    <span>Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'clients' %}" {% if request.resolver_match.url_name == 'clients' %}class="active"{% endif %}>
+                    <span class="icon"><ion-icon name="people-outline"></ion-icon></span>
+                    <span>Clients</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'tax_returns' %}" {% if request.resolver_match.url_name == 'tax_returns' %}class="active"{% endif %}>
+                    <span class="icon"><ion-icon name="documents-outline"></ion-icon></span>
+                    <span>Tax Returns</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'my_returns' %}" {% if request.resolver_match.url_name == 'my_returns' %}class="active"{% endif %}>
+                    <span class="icon"><ion-icon name="id-card-outline"></ion-icon></span>
+                    <span>My Returns</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'planning' %}" {% if request.resolver_match.url_name == 'planning' %}class="active"{% endif %}>
+                    <span class="icon"><ion-icon name="calendar-outline"></ion-icon></span>
+                    <span>Planning</span>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'configuration' %}" {% if request.resolver_match.url_name == 'configuration' %}class="active"{% endif %}>
+                    <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
+                    <span>Configuration</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="logout-item">
+            <li>
+                <a href="{% url 'logout' %}">
+                    <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

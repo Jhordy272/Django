@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Planning{% endblock %}
+
+{% block extra_head %}
+<style>
+    .page-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+    .page-header h1 { font-size:22px; font-weight:600; color:#1a1a2e; }
+
+    .btn-primary {
+        background:#d40000; color:#fff; border:none;
+        padding:9px 18px; border-radius:6px; cursor:pointer;
+        font-size:14px; display:flex; align-items:center; gap:6px;
+        transition:background 0.2s;
+    }
+    .btn-primary:hover { background:#b30000; }
+
+    .filters {
+        background:#fff; border-radius:10px; padding:16px 20px;
+        display:flex; gap:16px; flex-wrap:wrap; align-items:flex-end;
+        margin-bottom:24px; box-shadow:0 1px 4px rgba(0,0,0,0.08);
+    }
+    .filter-group { display:flex; flex-direction:column; gap:4px; }
+    .filter-group label { font-size:12px; color:#666; font-weight:500; }
+    .filter-group select,
+    .filter-group input {
+        border:1px solid #ddd; border-radius:6px;
+        padding:7px 10px; font-size:13px; outline:none; background:#fafafa;
+    }
+    .filter-group select:focus,
+    .filter-group input:focus { border-color:#d40000; }
+
+    .table-card { background:#fff; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,0.08); overflow:hidden; }
+    .table-card table { width:100%; border-collapse:collapse; font-size:13px; }
+    .table-card thead th {
+        background:#d40000; color:#fff;
+        padding:12px 16px; text-align:left; font-weight:500; white-space:nowrap;
+    }
+    .table-card tbody tr { border-bottom:1px solid #f0f0f0; transition:background 0.15s; }
+    .table-card tbody tr:hover { background:#fff5f5; }
+    .table-card tbody td { padding:11px 16px; color:#333; vertical-align:middle; }
+
+    .badge { display:inline-block; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; }
+    .badge-pending     { background:#fff3cd; color:#856404; }
+    .badge-in_progress { background:#cfe2ff; color:#084298; }
+    .badge-completed   { background:#d1e7dd; color:#0a3622; }
+    .badge-overdue     { background:#f8d7da; color:#842029; }
+
+    .actions { display:flex; gap:8px; }
+    .btn-icon {
+        background:none; border:none; cursor:pointer;
+        color:#555; font-size:16px; padding:4px;
+        border-radius:4px; transition:background 0.15s;
+    }
+    .btn-icon:hover { background:#f0f0f0; color:#d40000; }
+
+    .modal-backdrop {
+        display:none; position:fixed; inset:0;
+        background:rgba(0,0,0,0.4); z-index:200;
+        justify-content:center; align-items:center;
+    }
+    .modal-backdrop.open { display:flex; }
+    .modal {
+        background:#fff; border-radius:12px; width:500px; max-width:95%;
+        padding:28px; box-shadow:0 8px 32px rgba(0,0,0,0.2);
+    }
+    .modal h2 { font-size:18px; margin-bottom:20px; color:#1a1a2e; }
+    .form-group { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+    .form-group label { font-size:12px; color:#666; font-weight:500; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        border:1px solid #ddd; border-radius:6px;
+        padding:8px 10px; font-size:13px; outline:none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color:#d40000; }
+    .modal-footer { display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+    .btn-cancel {
+        background:#f0f0f0; border:none; padding:8px 16px;
+        border-radius:6px; cursor:pointer; font-size:13px;
+    }
+    .btn-cancel:hover { background:#e0e0e0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Tax Planning</h1>
+    <button class="btn-primary" onclick="document.getElementById('modalNew').classList.add('open')">
+        <ion-icon name="add-outline"></ion-icon>
+        New Task
+    </button>
+</div>
+
+<form method="get" action="{% url 'planning' %}">
+    <div class="filters">
+        <div class="filter-group">
+            <label>Status</label>
+            <select name="status">
+                <option value="">All</option>
+                <option value="pending"     {% if request.GET.status == 'pending'     %}selected{% endif %}>Pending</option>
+                <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                <option value="completed"   {% if request.GET.status == 'completed'   %}selected{% endif %}>Completed</option>
+                <option value="overdue"     {% if request.GET.status == 'overdue'     %}selected{% endif %}>Overdue</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>From</label>
+            <input type="date" name="date_from" value="{{ request.GET.date_from }}">
+        </div>
+        <div class="filter-group">
+            <label>To</label>
+            <input type="date" name="date_to" value="{{ request.GET.date_to }}">
+        </div>
+        <div class="filter-group">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn-primary">
+                <ion-icon name="search-outline"></ion-icon>
+                Search
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Client</th>
+                <th>Obligation</th>
+                <th>Responsible</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ task.client }}</td>
+                <td>{{ task.obligation }}</td>
+                <td>{{ task.responsible }}</td>
+                <td>{{ task.due_date|date:"m/d/Y" }}</td>
+                <td><span class="badge badge-{{ task.status }}">{{ task.get_status_display }}</span></td>
+                <td>
+                    <div class="actions">
+                        <button class="btn-icon" title="Edit"><ion-icon name="create-outline"></ion-icon></button>
+                        <button class="btn-icon" title="Delete"><ion-icon name="trash-outline"></ion-icon></button>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align:center; padding:32px; color:#999;">No tasks found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- New Task Modal -->
+<div class="modal-backdrop" id="modalNew">
+    <div class="modal">
+        <h2>New Planning Task</h2>
+        <form method="post" action="{% url 'planning' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Client</label>
+                <input type="text" name="client" placeholder="Client name" required>
+            </div>
+            <div class="form-group">
+                <label>Tax Obligation</label>
+                <input type="text" name="obligation" placeholder="e.g. Income Tax Return" required>
+            </div>
+            <div class="form-group">
+                <label>Responsible</label>
+                <input type="text" name="responsible" placeholder="Responsible person" required>
+            </div>
+            <div class="form-group">
+                <label>Due Date</label>
+                <input type="date" name="due_date" required>
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select name="status">
+                    <option value="pending">Pending</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea name="notes" rows="3" placeholder="Optional notes..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel"
+                        onclick="document.getElementById('modalNew').classList.remove('open')">
+                    Cancel
+                </button>
+                <button type="submit" class="btn-primary">
+                    <ion-icon name="save-outline"></ion-icon>
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.getElementById('modalNew').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('open');
+    });
+</script>
+{% endblock %}

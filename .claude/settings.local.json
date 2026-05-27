@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\57304\\\\Desktop\\\\BDO\\\\bdo_project\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\57304\\\\Desktop\\\\BDO\\\\app\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\57304\\\\Desktop\\\\BDO\\\\app\\\\templates\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\57304\\\\Desktop\\\\BDO\\\\app\\\\static\\\\img\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\57304\\\\Desktop\\\\BDO\\\\app\\\\static\\\\css\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\57304\\\\Desktop\\\\BDO\\\\app\\\\templates\\\\partials\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\57304\\\\Desktop\\\\BDO\\\\app\\\\migrations\")",
+      "PowerShell(New-Item -ItemType File -Force \"C:\\\\Users\\\\57304\\\\Desktop\\\\BDO\\\\app\\\\migrations\\\\__init__.py\")",
+      "Bash(python manage.py makemigrations app)"
+    ]
+  }
+}

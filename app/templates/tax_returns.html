@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Tax Returns{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+    <h1 style="font-size:22px; font-weight:600; color:#1a1a2e;">Tax Returns</h1>
+    <button style="background:#d40000; color:#fff; border:none; padding:9px 18px; border-radius:6px; cursor:pointer; font-size:14px; display:flex; align-items:center; gap:6px;">
+        <ion-icon name="add-outline"></ion-icon> New Return
+    </button>
+</div>
+
+<div style="background:#fff; border-radius:10px; box-shadow:0 1px 4px rgba(0,0,0,0.08); overflow:hidden;">
+    <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <thead>
+            <tr>
+                <th style="background:#d40000; color:#fff; padding:12px 16px; text-align:left; font-weight:500;">#</th>
+                <th style="background:#d40000; color:#fff; padding:12px 16px; text-align:left; font-weight:500;">Client</th>
+                <th style="background:#d40000; color:#fff; padding:12px 16px; text-align:left; font-weight:500;">Type</th>
+                <th style="background:#d40000; color:#fff; padding:12px 16px; text-align:left; font-weight:500;">Period</th>
+                <th style="background:#d40000; color:#fff; padding:12px 16px; text-align:left; font-weight:500;">Due Date</th>
+                <th style="background:#d40000; color:#fff; padding:12px 16px; text-align:left; font-weight:500;">Status</th>
+                <th style="background:#d40000; color:#fff; padding:12px 16px; text-align:left; font-weight:500;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="border-bottom:1px solid #f0f0f0;">
+                <td style="padding:11px 16px;">1</td>
+                <td style="padding:11px 16px;">Northern Investments S.A.S</td>
+                <td style="padding:11px 16px;">Income Tax</td>
+                <td style="padding:11px 16px;">FY 2025</td>
+                <td style="padding:11px 16px;">04/15/2026</td>
+                <td style="padding:11px 16px;"><span style="background:#d1e7dd; color:#0a3622; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600;">Filed</span></td>
+                <td style="padding:11px 16px;">
+                    <button style="background:none; border:none; cursor:pointer; color:#555; font-size:16px; padding:4px;"><ion-icon name="eye-outline"></ion-icon></button>
+                    <button style="background:none; border:none; cursor:pointer; color:#555; font-size:16px; padding:4px;"><ion-icon name="create-outline"></ion-icon></button>
+                </td>
+            </tr>
+            <tr style="border-bottom:1px solid #f0f0f0;">
+                <td style="padding:11px 16px;">2</td>
+                <td style="padding:11px 16px;">Andean Business Group Ltd</td>
+                <td style="padding:11px 16px;">VAT</td>
+                <td style="padding:11px 16px;">Bim. 2 - 2026</td>
+                <td style="padding:11px 16px;">05/28/2026</td>
+                <td style="padding:11px 16px;"><span style="background:#cfe2ff; color:#084298; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600;">In Progress</span></td>
+                <td style="padding:11px 16px;">
+                    <button style="background:none; border:none; cursor:pointer; color:#555; font-size:16px; padding:4px;"><ion-icon name="eye-outline"></ion-icon></button>
+                    <button style="background:none; border:none; cursor:pointer; color:#555; font-size:16px; padding:4px;"><ion-icon name="create-outline"></ion-icon></button>
+                </td>
+            </tr>
+            <tr style="border-bottom:1px solid #f0f0f0;">
+                <td style="padding:11px 16px;">3</td>
+                <td style="padding:11px 16px;">Pacific Trading S.A</td>
+                <td style="padding:11px 16px;">Withholding Tax</td>
+                <td style="padding:11px 16px;">April 2026</td>
+                <td style="padding:11px 16px;">05/20/2026</td>
+                <td style="padding:11px 16px;"><span style="background:#f8d7da; color:#842029; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600;">Overdue</span></td>
+                <td style="padding:11px 16px;">
+                    <button style="background:none; border:none; cursor:pointer; color:#555; font-size:16px; padding:4px;"><ion-icon name="eye-outline"></ion-icon></button>
+                    <button style="background:none; border:none; cursor:pointer; color:#555; font-size:16px; padding:4px;"><ion-icon name="create-outline"></ion-icon></button>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:11px 16px;">4</td>
+                <td style="padding:11px 16px;">Horizon Construction S.A.S</td>
+                <td style="padding:11px 16px;">Municipal Tax</td>
+                <td style="padding:11px 16px;">FY 2025</td>
+                <td style="padding:11px 16px;">06/30/2026</td>
+                <td style="padding:11px 16px;"><span style="background:#fff3cd; color:#856404; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600;">Pending</span></td>
+                <td style="padding:11px 16px;">
+                    <button style="background:none; border:none; cursor:pointer; color:#555; font-size:16px; padding:4px;"><ion-icon name="eye-outline"></ion-icon></button>
+                    <button style="background:none; border:none; cursor:pointer; color:#555; font-size:16px; padding:4px;"><ion-icon name="create-outline"></ion-icon></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

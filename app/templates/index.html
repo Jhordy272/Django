@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h1 style="font-size:22px; font-weight:600; color:#1a1a2e; margin-bottom:24px;">
+    Welcome, {{ request.user.get_full_name|default:request.user.username }}
+</h1>
+
+<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:20px;">
+    <div style="background:#fff; border-radius:10px; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+        <div style="font-size:13px; color:#888; margin-bottom:8px;">Active Clients</div>
+        <div style="font-size:32px; font-weight:700; color:#d40000;">—</div>
+    </div>
+    <div style="background:#fff; border-radius:10px; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+        <div style="font-size:13px; color:#888; margin-bottom:8px;">Pending Returns</div>
+        <div style="font-size:32px; font-weight:700; color:#d40000;">—</div>
+    </div>
+    <div style="background:#fff; border-radius:10px; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+        <div style="font-size:13px; color:#888; margin-bottom:8px;">Planning Tasks</div>
+        <div style="font-size:32px; font-weight:700; color:#d40000;">—</div>
+    </div>
+</div>
+{% endblock %}
